@@ -1,9 +1,15 @@
-# gray-structured
+<p align="center">
+  <img src="assets/gray-logo.svg" alt="gray" width="96">
+</p>
+<h1 align="center">gray-structured</h1>
+<p align="center">A `structured` tool that returns parsed JSON matching your schema, via a constrained sub-turn.</p>
+<p align="center">
+  <a href="https://github.com/vstaln/gray-structured/blob/main/LICENSE"><img alt="MIT License" src="https://img.shields.io/badge/license-MIT-blue.svg"></a>
+  <img alt="gray plugin" src="https://img.shields.io/badge/gray-plugin-7aa2f7.svg">
+  <img alt="rust" src="https://img.shields.io/badge/built%20with-rust-orange.svg">
+</p>
 
-`structured` tool: runs a host sub-turn constrained to a JSON schema and returns the parsed JSON. Port of pi's `structured-output` extension.
-
-A sidecar plugin for [gray](https://github.com/vstaln/gray), scaffolded by
-[gray-account](https://github.com/vstaln/gray-account).
+A `structured` tool: runs a host sub-turn constrained to a JSON schema and returns the parsed JSON.
 
 ## What it does
 
@@ -14,8 +20,8 @@ from the reply (braces inside strings don't count), and returns it
 pretty-printed as the tool result. No parseable JSON → `is_error` carrying
 the raw reply. 25s cap (under the host's own 28s host/run deadline).
 
-pi's version was a terminating tool with a fixed output shape; this port
-makes the shape a per-call argument and produces it via a nested model turn.
+The output shape is a per-call argument — each invocation runs a nested
+model turn constrained to the supplied schema.
 
 ## Wire methods
 
@@ -39,3 +45,7 @@ cargo test
 cargo build --release
 gray account check      # entry point + manifest handshake
 ```
+
+---
+Part of the [gray](https://github.com/vstaln/gray) plugin ecosystem —
+the open-source AI agent harness. <https://gray.alignment.id>
