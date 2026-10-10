@@ -188,6 +188,10 @@ fn main() -> std::io::Result<()> {
                 continue;
             }
             if v.get("id").and_then(|i| i.as_u64()).is_none() {
+                if v.get("method").and_then(|m| m.as_str()) == Some("plugin/shutdown") {
+                    let _ = work_tx.send(v);
+                    break;
+                }
                 continue; // notification
             }
             if work_tx.send(v).is_err() {
