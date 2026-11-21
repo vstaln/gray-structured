@@ -146,9 +146,9 @@ fn structured_call(
         let _ = o.flush();
     }
     // recv_timeout also fails fast when the reader thread dies on shutdown.
-    let reply = rx
-        .recv_timeout(RUN_TTL)
-        .map_err(|_| "structured: host/run did not answer within 25s (host.turn granted?)".to_string());
+    let reply = rx.recv_timeout(RUN_TTL).map_err(|_| {
+        "structured: host/run did not answer within 25s (host.turn granted?)".to_string()
+    });
     pending.lock().expect("pending").remove(&id);
     let reply = reply?;
     if let Some(e) = reply.get("error") {
@@ -179,7 +179,9 @@ fn main() -> std::io::Result<()> {
         let stdin = std::io::stdin();
         for line in stdin.lock().lines() {
             let Ok(line) = line else { break };
-            let Ok(v) = serde_json::from_str::<Value>(&line) else { continue };
+            let Ok(v) = serde_json::from_str::<Value>(&line) else {
+                continue;
+            };
             if let Some(id) = v.get("id").and_then(|i| i.as_str())
                 && v.get("method").is_none()
                 && let Some(tx) = reader_pending.lock().expect("pending").remove(id)
@@ -271,7 +273,10 @@ mod tests {
     #[test]
     fn extract_finds_first_balanced_block() {
         let t = "Sure! {\"a\": {\"b\": \"} not end\"}} trailing {\"ignored\":1}";
-        assert_eq!(extract_json_block(t).unwrap(), "{\"a\": {\"b\": \"} not end\"}}");
+        assert_eq!(
+            extract_json_block(t).unwrap(),
+            "{\"a\": {\"b\": \"} not end\"}}"
+        );
         assert!(extract_json_block("no json here").is_none());
         assert!(extract_json_block("{\"unclosed\":").is_none());
     }
